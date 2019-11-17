@@ -1,0 +1,65 @@
+<html>
+<head>
+	<title>Bot Chat</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+			<link rel="stylesheet" href="style2.css">
+
+	<script type="text/javascript">
+		var accessToken = "b2ded394284d4c578e01d9afc365c30b";
+		var baseUrl = "https://api.api.ai/v1/";
+		$(document).ready(function() {
+			$("#input").keypress(function(event) {
+				if (event.which == 13) {
+					$('.chatBox').append('<span class="userInput">' + 'you:'+ $('input').val() + '</span><br><br>')
+					event.preventDefault();
+					let query  = $('input').val()
+					$('input').val('')
+					send(query);
+				}
+			});
+		});
+	
+		function send(query) {
+			var text = query;
+			$.ajax({
+				type: "POST",
+				url: baseUrl + "query?v=20180101",
+				contentType: "application/json; charset=utf-8",
+				dataType: "json",
+				headers: {
+					"Authorization": "Bearer " + accessToken
+				},
+				data: JSON.stringify({ query: text, lang: "en", sessionId: "somerandomthing" }),
+				success: function(data) {
+					setResponse(data);
+				}
+			});
+		}
+		function setResponse(val) {
+			$(".chatBox").append('<span class="responseData">'+ 'tasty:' + val.result.fulfillment.speech + '</span><br><br>');
+		}
+	</script>
+	<style type="text/css">
+		body { width: 250px; margin: 0 auto;height: 500px; border: 2px solid black;padding: 10px;	 }
+		body{
+    background-image: linear-gradient(to right,violet , black);
+    background-size: 100%;
+    position: absolute;
+    bottom: 50px;
+    left: 50px;
+}
+
+		div { width: 250px;height: 450px;overflow: auto	 }
+		.userInput{float: left;}
+		.responseData{float:right};
+		#input { width: 100px; }
+		button { width: 50px; }
+	</style>
+</head>
+<body>
+	<div class ='chatBox'>
+	</div>
+	<input id="input" type="text" style="width: 250px;"> <button id="rec">send</button>
+</body>
+</html>
